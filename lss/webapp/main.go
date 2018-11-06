@@ -5,25 +5,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"github.com/go-demo-app/lss/webapp/viewmodel"
+	"github.com/go-demo-app/lss/webapp/controller"
 )
 
 func main() {
 	templates := populateTemplates()
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		requestFile := r.URL.Path[1:]
-		template := templates[requestFile+".html"]
-		context := viewmodel.NewBase()
-		
-		if template != nil {
-			template.Execute(w, context)
-		} else {
-			w.WriteHeader(404)
-		}
-	})
-
-	http.Handle("/img/", http.FileServer(http.Dir("public")))
-	http.Handle("/css/", http.FileServer(http.Dir("public")))
+	controller.Startup(templates)
 	http.ListenAndServe(":8000", nil)
 }
 
